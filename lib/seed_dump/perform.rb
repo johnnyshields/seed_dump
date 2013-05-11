@@ -125,7 +125,9 @@ module SeedDump
       @seed_rb = ""
       @models.sort.each do |model|
           m = model.constantize
-          if m.ancestors.include?(ActiveRecord::Base)
+          if (defined?(ActiveRecord) && m.ancestors.include?(::ActiveRecord::Base)) ||
+             (defined?(Mongoid)  && m.ancestors.include?(::Mongoid::Document))
+
             puts "Adding #{model} seeds." if @opts['verbose']
 
             if @opts['skip_callbacks']
@@ -136,7 +138,7 @@ module SeedDump
 
             @seed_rb << dumpModel(m) << "\n\n"
           else
-            puts "Skipping non-ActiveRecord model #{model}..." if @opts['verbose']
+            puts "Skipping unsupported model #{model}..." if @opts['verbose']
           end
       end
     end
@@ -164,7 +166,7 @@ module SeedDump
 
     def setSearchPath(path, append_public=true)
         path_parts = [path.to_s, ('public' if append_public)].compact
-        ActiveRecord::Base.connection.schema_search_path = path_parts.join(',')
+        ::ActiveRecord::Base.connection.schema_search_path = path_parts.join(',')
     end
 
     def run(env)
@@ -173,7 +175,7 @@ module SeedDump
 
       puts "Protection is disabled." if @opts['verbose'] && @opts['without_protection']
 
-      setSearchPath @opts['schema'] if @opts['schema']
+      setSearchPath @opts['schema'] if defined?(ActiveRecord) && @opts['schema']
 
       loadModels
 

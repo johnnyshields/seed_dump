@@ -1,7 +1,8 @@
 require 'test_helper'
-require "seed_dump/perform"
+require 'active_record_helper'
+require 'seed_dump/perform'
 
-class SeedDumpTest < ActiveSupport::TestCase
+class ActiveRecordTest < ActiveSupport::TestCase
 
   setup do
     @sd = SeedDump::Perform.new

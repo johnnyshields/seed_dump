@@ -1,5 +1,9 @@
 == Seed Dump
 
+== 0.5.0 / 2013-05-11
+
+ * support Mongoid ORM [johnnyshelds]
+
 == 0.4.1 / 2012-08-01
 
  * include TIMESTAMPS by default
